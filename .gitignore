@@ -1,0 +1,12 @@
+######################################################################
+# Excluding Unreal generated files, which speed up loading processes #
+######################################################################
+*/Build
+*/Binaries
+*/DerivedDataCache
+*/Intermediate
+*/Saved
+*_BuildData.uasset
+BuildingEscape/Content/StarterContent/
+
+*.VC.db
