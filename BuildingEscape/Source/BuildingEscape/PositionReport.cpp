@@ -19,9 +19,9 @@ void UPositionReport::BeginPlay()
 {
 	Super::BeginPlay();
 
-	FString ChairOwner = GetOwner()->GetName();
-	
-	UE_LOG(LogTemp, Warning, TEXT("Position reporting ongoing for Chair!"));
+	FString _ObjectOwner = GetOwner()->GetName();
+	FString _ObjectPosition = GetOwner()->GetTransform().GetLocation().ToString();
+	UE_LOG(LogTemp, Warning, TEXT("%s is at %s!"), *_ObjectOwner, *_ObjectPosition);
 	// ...
 	
 }
