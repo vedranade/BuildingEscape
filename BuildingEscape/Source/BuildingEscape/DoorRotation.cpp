@@ -2,6 +2,8 @@
 
 #include "DoorRotation.h"
 #include "GameFramework/Actor.h"
+#include "GameFramework/PlayerController.h"
+#include "Engine/World.h"
 
 // Sets default values for this component's properties
 UDoorRotation::UDoorRotation()
@@ -19,6 +21,7 @@ void UDoorRotation::BeginPlay()
 {
 	Super::BeginPlay();
 
+	ActorThatOpens = GetWorld()->GetFirstPlayerController()->GetPawn();
 	// ...
 	
 }
