@@ -12,7 +12,7 @@ UDoorRotation::UDoorRotation()
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
 
-	// ...
+	// ...c
 }
 
 
@@ -21,16 +21,23 @@ void UDoorRotation::BeginPlay()
 {
 	Super::BeginPlay();
 
+	Owner = GetOwner();
 	ActorThatOpens = GetWorld()->GetFirstPlayerController()->GetPawn();
+	CurrentRotation = Owner->GetActorRotation();
+	
+	UE_LOG(LogTemp, Warning, TEXT("Current door rotation is: %f"), CurrentRotation.Yaw);
 	// ...
 	
 }
 
 void UDoorRotation::OpenDoor()
 {
-	AActor* Owner = GetOwner();
-	FRotator NewRotation = FRotator(0.0f, 60.0f, 0.0f);
-	Owner->SetActorRotation(NewRotation);
+	Owner->SetActorRotation(FRotator(0.0f, 90.0f - DoorAngle, 0.0f));
+}
+
+void UDoorRotation::CloseDoor()
+{
+	Owner->SetActorRotation(FRotator(0.0f, DoorAngle, 0.0f));
 }
 
 
@@ -38,9 +45,17 @@ void UDoorRotation::OpenDoor()
 void UDoorRotation::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
+	
+	//Polling the trigger volume to check if trigger is stepped on:
 	if (PressurePlate->IsOverlappingActor(ActorThatOpens))
+	{
 		OpenDoor();
+		LastDoorOpenTime = GetWorld()->GetTimeSeconds();
+	}
+
+	//Checking if it's time to close the door:
+	if (GetWorld()->GetTimeSeconds() - LastDoorOpenTime > DoorCloseDelayTime)
+		CloseDoor();
 	// ...
 }
 
