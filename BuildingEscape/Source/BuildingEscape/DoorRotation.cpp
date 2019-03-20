@@ -25,14 +25,14 @@ void UDoorRotation::BeginPlay()
 	ActorThatOpens = GetWorld()->GetFirstPlayerController()->GetPawn();
 	CurrentRotation = Owner->GetActorRotation();
 	
-	UE_LOG(LogTemp, Warning, TEXT("Current door rotation is: %f"), CurrentRotation.Yaw);
+	//UE_LOG(LogTemp, Warning, TEXT("Current door rotation is: %f"), CurrentRotation.Yaw);
 	// ...
 	
 }
 
 void UDoorRotation::OpenDoor()
 {
-	Owner->SetActorRotation(FRotator(0.0f, 90.0f - DoorAngle, 0.0f));
+	Owner->SetActorRotation(FRotator(0.0f, CurrentRotation.Yaw - DoorAngle, 0.0f));
 }
 
 void UDoorRotation::CloseDoor()
