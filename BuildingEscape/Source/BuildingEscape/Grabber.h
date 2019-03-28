@@ -24,6 +24,10 @@ public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
+private:
+	// How far ahead is the object's reach:
+	float Reach = 100.0f;
+
 		
 	
 };
