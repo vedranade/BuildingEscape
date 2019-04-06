@@ -4,8 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "PhysicsEngine/PhysicsHandleComponent.h"
 #include "Grabber.generated.h"
-
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class BUILDINGESCAPE_API UGrabber : public UActorComponent
@@ -27,7 +27,6 @@ public:
 private:
 	// How far ahead is the object's reach:
 	float Reach = 100.0f;
-
-		
-	
+	UPhysicsHandleComponent *PhysicsHandle = nullptr;
+	UInputComponent *InputComponent = nullptr;
 };

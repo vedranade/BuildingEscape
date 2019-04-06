@@ -4,6 +4,7 @@
 #include "GameFramework/PlayerController.h"
 #include "Engine/World.h"
 #include "Engine/Public/DrawDebugHelpers.h"
+#include "PhysicsEngine/PhysicsHandleComponent.h"
 
 #define OUTPUT
 
@@ -24,7 +25,25 @@ void UGrabber::BeginPlay()
 	Super::BeginPlay();
 
 	// ...
-	
+	PhysicsHandle = GetOwner()->FindComponentByClass<UPhysicsHandleComponent>();
+	if (PhysicsHandle)
+	{
+
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("Physics handle not found"));
+	}
+
+	InputComponent = GetOwner()->FindComponentByClass<UInputComponent>();
+	if (InputComponent)
+	{
+		UE_LOG(LogTemp, Error, TEXT("Input component found for %s"), *GetOwner()->GetName())
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("Input component not found for %s"), *GetOwner()->GetName());
+	}
 }
 
 
@@ -37,7 +56,6 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 	FVector PlayerViewpointLocation;						//Point based location of player (where the player is standing, positioned etc.)
 	FRotator PlayerViewpointRotation;						//What direction in all 3 axis the player is looking at
 	GetWorld()->GetFirstPlayerController()->GetPlayerViewPoint(OUTPUT PlayerViewpointLocation, OUTPUT PlayerViewpointRotation);				//Sets values in the func params
-	UE_LOG(LogTemp, Warning, TEXT("Location: %s and Rotation: %s"), *PlayerViewpointLocation.ToString(), *PlayerViewpointRotation.ToString());
 	
 	FVector LineTraceEnd = PlayerViewpointLocation + PlayerViewpointRotation.Vector() * Reach;
 
