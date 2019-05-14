@@ -38,7 +38,10 @@ void UGrabber::BeginPlay()
 	InputComponent = GetOwner()->FindComponentByClass<UInputComponent>();
 	if (InputComponent)
 	{
-		UE_LOG(LogTemp, Error, TEXT("Input component found for %s"), *GetOwner()->GetName())
+		UE_LOG(LogTemp, Error, TEXT("Input component found for %s"), *GetOwner()->GetName());
+		InputComponent->BindAction("Grab", EInputEvent::IE_Pressed, this, &UGrabber::Grab);
+		InputComponent->BindAction("Grab", EInputEvent::IE_Released, this, &UGrabber::Release);
+
 	}
 	else
 	{
@@ -72,7 +75,7 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 	);
 
 	FCollisionQueryParams TraceParameters(FName(TEXT("")), false, GetOwner());
-
+	
 	//Line-trace out to reach a distance:
 	FHitResult Hit;
 	GetWorld()->LineTraceSingleByObjectType
@@ -88,5 +91,17 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 	AActor* ActorHit = Hit.GetActor();
 	if(ActorHit)
 		UE_LOG(LogTemp, Warning, TEXT("Object Hit: %s"), *ActorHit->GetName());
+}
+
+///Ray-cast and grab what is in reach:
+void UGrabber::Grab()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Grab pressed"));
+}
+
+
+void UGrabber::Release()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Release pressed"));
 }
 
