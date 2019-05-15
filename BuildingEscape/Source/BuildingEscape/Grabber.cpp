@@ -33,17 +33,9 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	//Get player viewpoint:
-	FVector PlayerViewpointLocation;						//Point based location of player (where the player is standing, positioned etc.)
-	FRotator PlayerViewpointRotation;						//What direction in all 3 axis the player is looking at
-	GetWorld()->GetFirstPlayerController()->GetPlayerViewPoint(OUTPUT PlayerViewpointLocation, OUTPUT PlayerViewpointRotation);				//Sets values in the func params
-
-	FVector LineTraceEnd = PlayerViewpointLocation + PlayerViewpointRotation.Vector() * Reach;
-
+	FVector LineTraceEnd = GetLineReachEnd();
 	if (PhysicsHandle->GrabbedComponent)
-	{
 		PhysicsHandle->SetTargetLocation(LineTraceEnd);
-	}
 }
 
 ///Set attached input component, bind controls etc.:
@@ -67,51 +59,53 @@ void UGrabber::SetupInputComponent()
 void UGrabber::FindPhysicsHandleComponent()
 {
 	PhysicsHandle = GetOwner()->FindComponentByClass<UPhysicsHandleComponent>();
-	if (PhysicsHandle)
-	{
 
-	}
-	else
-	{
+	if (PhysicsHandle == nullptr)
 		UE_LOG(LogTemp, Error, TEXT("Physics handle not found"));
-	}
 }
 ///Ray-cast and grab what is in reach:
 void UGrabber::Grab()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Grab pressed"));
-
 	///LINE TRACE and see if we reach any actors with physics body collision channel set:
 	FHitResult HitResult = GetFirstPhysicsBodyInReach();
 	UPrimitiveComponent *ComponentToGrab = HitResult.GetComponent();
 	AActor *ActorHit = HitResult.GetActor();
 
+	///If we hit something, attached PhysicsHandle:
 	if (ActorHit)
 	{
-		PhysicsHandle->GrabComponentAtLocation
+		/*PhysicsHandle->GrabComponentAtLocation
 		(
 			ComponentToGrab,
 			NAME_None,
 			ComponentToGrab->GetOwner()->GetActorLocation()
+		);*/
+
+		/*PhysicsHandle->GrabComponent
+		(
+			ComponentToGrab,
+			NAME_None,
+			ComponentToGrab->GetOwner()->GetActorLocation(),
+			true
+		);*/
+		PhysicsHandle->GrabComponentAtLocationWithRotation
+		(
+			ComponentToGrab,
+			NAME_None,
+			ComponentToGrab->GetOwner()->GetActorLocation(),
+			ComponentToGrab->GetOwner()->GetActorRotation()
 		);
 	}
-	
 }
 
 void UGrabber::Release()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Release pressed"));
 	PhysicsHandle->ReleaseComponent();
 }
 
-FHitResult UGrabber::GetFirstPhysicsBodyInReach() const
+const FHitResult UGrabber::GetFirstPhysicsBodyInReach()
 {
-	//Get player viewpoint:
-	FVector PlayerViewpointLocation;						//Point based location of player (where the player is standing, positioned etc.)
-	FRotator PlayerViewpointRotation;						//What direction in all 3 axis the player is looking at
-	GetWorld()->GetFirstPlayerController()->GetPlayerViewPoint(OUTPUT PlayerViewpointLocation, OUTPUT PlayerViewpointRotation);				//Sets values in the func params
-
-	FVector LineTraceEnd = PlayerViewpointLocation + PlayerViewpointRotation.Vector() * Reach;
+	FVector LineTraceEnd = GetLineReachEnd();
 
 	FCollisionQueryParams TraceParameters(FName(TEXT("")), false, GetOwner());
 
@@ -120,7 +114,7 @@ FHitResult UGrabber::GetFirstPhysicsBodyInReach() const
 	GetWorld()->LineTraceSingleByObjectType
 	(
 		OUTPUT Hit,
-		PlayerViewpointLocation,
+		GetLineReachStart(),
 		LineTraceEnd,
 		FCollisionObjectQueryParams(ECollisionChannel::ECC_PhysicsBody),
 		TraceParameters
@@ -134,3 +128,22 @@ FHitResult UGrabber::GetFirstPhysicsBodyInReach() const
 	return Hit;
 }
 
+FVector UGrabber::GetLineReachStart()
+{
+	//Get player viewpoint:
+	FVector PlayerViewpointLocation;						//Point based location of player (where the player is standing, positioned etc.)
+	FRotator PlayerViewpointRotation;						//What direction in all 3 axis the player is looking at
+	GetWorld()->GetFirstPlayerController()->GetPlayerViewPoint(OUTPUT PlayerViewpointLocation, OUTPUT PlayerViewpointRotation);				//Sets values in the func params
+
+	return PlayerViewpointLocation;
+}
+
+FVector UGrabber::GetLineReachEnd()
+{
+	//Get player viewpoint:
+	FVector PlayerViewpointLocation;						//Point based location of player (where the player is standing, positioned etc.)
+	FRotator PlayerViewpointRotation;						//What direction in all 3 axis the player is looking at
+	GetWorld()->GetFirstPlayerController()->GetPlayerViewPoint(OUTPUT PlayerViewpointLocation, OUTPUT PlayerViewpointRotation);				//Sets values in the func params
+
+	return PlayerViewpointLocation + PlayerViewpointRotation.Vector() * Reach;
+}
