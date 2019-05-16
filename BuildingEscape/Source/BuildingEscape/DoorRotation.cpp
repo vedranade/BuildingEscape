@@ -1,9 +1,12 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "DoorRotation.h"
+#include "Components/PrimitiveComponent.h"
 #include "GameFramework/Actor.h"
 #include "GameFramework/PlayerController.h"
 #include "Engine/World.h"
+
+#define OUT
 
 // Sets default values for this component's properties
 UDoorRotation::UDoorRotation()
@@ -22,12 +25,7 @@ void UDoorRotation::BeginPlay()
 	Super::BeginPlay();
 
 	Owner = GetOwner();
-	ActorThatOpens = GetWorld()->GetFirstPlayerController()->GetPawn();
 	CurrentRotation = Owner->GetActorRotation();
-	
-	//UE_LOG(LogTemp, Warning, TEXT("Current door rotation is: %f"), CurrentRotation.Yaw);
-	// ...
-	
 }
 
 void UDoorRotation::OpenDoor()
@@ -47,7 +45,7 @@ void UDoorRotation::TickComponent(float DeltaTime, ELevelTick TickType, FActorCo
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 	
 	//Polling the trigger volume to check if trigger is stepped on:
-	if (PressurePlate->IsOverlappingActor(ActorThatOpens))
+	if (GetTotalMassOfActorsOnPlate() > 50.0f)
 	{
 		OpenDoor();
 		LastDoorOpenTime = GetWorld()->GetTimeSeconds();
@@ -57,5 +55,20 @@ void UDoorRotation::TickComponent(float DeltaTime, ELevelTick TickType, FActorCo
 	if (GetWorld()->GetTimeSeconds() - LastDoorOpenTime > DoorCloseDelayTime)
 		CloseDoor();
 	// ...
+}
+
+float UDoorRotation::GetTotalMassOfActorsOnPlate()
+{
+	float TotalMass = 60.0f;
+
+	TArray<AActor*> OverlappingActors;
+	PressurePlate->GetOverlappingActors(OUT OverlappingActors);
+
+	for (const auto& Actor : OverlappingActors)
+	{
+		TotalMass += Actor->FindComponentByClass<UPrimitiveComponent>()->GetMass();
+	}
+
+	return TotalMass;
 }
 
