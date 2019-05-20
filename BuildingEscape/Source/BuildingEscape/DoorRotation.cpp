@@ -45,7 +45,7 @@ void UDoorRotation::TickComponent(float DeltaTime, ELevelTick TickType, FActorCo
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 	
 	//Polling the trigger volume to check if trigger is stepped on:
-	if (GetTotalMassOfActorsOnPlate() > 50.0f)
+	if (GetTotalMassOfActorsOnPlate() > 30.0f)
 	{
 		OpenDoor();
 		LastDoorOpenTime = GetWorld()->GetTimeSeconds();
@@ -59,7 +59,7 @@ void UDoorRotation::TickComponent(float DeltaTime, ELevelTick TickType, FActorCo
 
 float UDoorRotation::GetTotalMassOfActorsOnPlate()
 {
-	float TotalMass = 60.0f;
+	float TotalMass = 0.0f;
 
 	TArray<AActor*> OverlappingActors;
 	PressurePlate->GetOverlappingActors(OUT OverlappingActors);
@@ -67,6 +67,7 @@ float UDoorRotation::GetTotalMassOfActorsOnPlate()
 	for (const auto& Actor : OverlappingActors)
 	{
 		TotalMass += Actor->FindComponentByClass<UPrimitiveComponent>()->GetMass();
+		UE_LOG(LogTemp, Warning, TEXT("%s on pressure plate"), *Actor->GetName());
 	}
 
 	return TotalMass;
