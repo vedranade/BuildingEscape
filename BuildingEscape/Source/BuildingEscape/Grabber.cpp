@@ -44,7 +44,7 @@ void UGrabber::SetupInputComponent()
 	InputComponent = GetOwner()->FindComponentByClass<UInputComponent>();
 	if (InputComponent)
 	{
-		UE_LOG(LogTemp, Error, TEXT("Input component found for %s"), *GetOwner()->GetName());
+		//UE_LOG(LogTemp, Error, TEXT("Input component found for %s"), *GetOwner()->GetName());
 
 		///Binding controls:
 		InputComponent->BindAction("Grab", EInputEvent::IE_Pressed, this, &UGrabber::Grab);
@@ -122,10 +122,10 @@ const FHitResult UGrabber::GetFirstPhysicsBodyInReach()
 		TraceParameters
 	);
 
-	//Logging out what is being hit:
-	AActor* ActorHit = Hit.GetActor();
-	if (ActorHit)
-		UE_LOG(LogTemp, Warning, TEXT("Object Hit: %s"), *ActorHit->GetName());
+	////Logging out what is being hit:
+	//AActor* ActorHit = Hit.GetActor();
+	//if (ActorHit)
+	//	UE_LOG(LogTemp, Warning, TEXT("Object Hit: %s"), *ActorHit->GetName());
 
 	return Hit;
 }
