@@ -88,6 +88,7 @@ void UGrabber::Grab()
 			ComponentToGrab->GetOwner()->GetActorLocation(),
 			true
 		);*/
+		if (!PhysicsHandle) { return; }
 		PhysicsHandle->GrabComponentAtLocationWithRotation
 		(
 			ComponentToGrab,
@@ -100,6 +101,7 @@ void UGrabber::Grab()
 
 void UGrabber::Release()
 {
+	if (!PhysicsHandle) { return; }
 	PhysicsHandle->ReleaseComponent();
 }
 

@@ -32,12 +32,12 @@ private:
 
 	FRotator CurrentRotation;
 
-	AActor *Owner;
+	AActor *Owner = nullptr;
 	UPROPERTY(EditAnywhere)
 		float DoorAngle = 90.0f;
 
 	UPROPERTY(EditAnywhere)
-		ATriggerVolume* PressurePlate;
+		ATriggerVolume* PressurePlate = nullptr;
 		
 	float LastDoorOpenTime;
 

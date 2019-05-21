@@ -25,16 +25,19 @@ void UDoorRotation::BeginPlay()
 	Super::BeginPlay();
 
 	Owner = GetOwner();
+	if (!Owner) { return; }
 	CurrentRotation = Owner->GetActorRotation();
 }
 
 void UDoorRotation::OpenDoor()
 {
+	if (!Owner) { return; }
 	Owner->SetActorRotation(FRotator(0.0f, CurrentRotation.Yaw - DoorAngle, 0.0f));
 }
 
 void UDoorRotation::CloseDoor()
 {
+	if (!Owner) { return; }
 	Owner->SetActorRotation(FRotator(0.0f, DoorAngle, 0.0f));
 }
 
@@ -62,6 +65,12 @@ float UDoorRotation::GetTotalMassOfActorsOnPlate()
 	float TotalMass = 0.0f;
 
 	TArray<AActor*> OverlappingActors;
+
+	if (!PressurePlate) 
+	{
+		UE_LOG(LogTemp, Error, TEXT("PressurePlate points to nullptr"));
+		return 0.0f; 
+	}
 	PressurePlate->GetOverlappingActors(OUT OverlappingActors);
 
 	for (const auto& Actor : OverlappingActors)
