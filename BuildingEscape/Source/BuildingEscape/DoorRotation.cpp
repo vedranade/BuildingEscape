@@ -35,21 +35,6 @@ void UDoorRotation::BeginPlay()
 	}
 }
 
-void UDoorRotation::OpenDoor()
-{
-	/*if (!Owner) { return; }
-	Owner->SetActorRotation(FRotator(0.0f, CurrentRotation.Yaw - DoorAngle, 0.0f));*/
-	OnOpenRequest.Broadcast();
-}
-
-void UDoorRotation::CloseDoor()
-{
-	/*if (!Owner) { return; }
-	Owner->SetActorRotation(FRotator(0.0f, DoorAngle, 0.0f));*/
-	OnCloseRequest.Broadcast();
-}
-
-
 // Called every frame
 void UDoorRotation::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
@@ -58,13 +43,13 @@ void UDoorRotation::TickComponent(float DeltaTime, ELevelTick TickType, FActorCo
 	//Polling the trigger volume to check if trigger is stepped on:
 	if (GetTotalMassOfActorsOnPlate() > TriggerMass)
 	{
-		OpenDoor();
-		LastDoorOpenTime = GetWorld()->GetTimeSeconds();
+		OnOpen.Broadcast();
 	}
-
-	//Checking if it's time to close the door:
-	if (GetWorld()->GetTimeSeconds() - LastDoorOpenTime > DoorCloseDelayTime)
-		CloseDoor();
+	else
+	{
+		OnClose.Broadcast();
+	}
+	
 	// ...
 }
 
