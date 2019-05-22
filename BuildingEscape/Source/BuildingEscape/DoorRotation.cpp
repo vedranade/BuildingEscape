@@ -37,14 +37,16 @@ void UDoorRotation::BeginPlay()
 
 void UDoorRotation::OpenDoor()
 {
-	if (!Owner) { return; }
-	Owner->SetActorRotation(FRotator(0.0f, CurrentRotation.Yaw - DoorAngle, 0.0f));
+	/*if (!Owner) { return; }
+	Owner->SetActorRotation(FRotator(0.0f, CurrentRotation.Yaw - DoorAngle, 0.0f));*/
+	OnOpenRequest.Broadcast();
 }
 
 void UDoorRotation::CloseDoor()
 {
-	if (!Owner) { return; }
-	Owner->SetActorRotation(FRotator(0.0f, DoorAngle, 0.0f));
+	/*if (!Owner) { return; }
+	Owner->SetActorRotation(FRotator(0.0f, DoorAngle, 0.0f));*/
+	OnCloseRequest.Broadcast();
 }
 
 
@@ -54,7 +56,7 @@ void UDoorRotation::TickComponent(float DeltaTime, ELevelTick TickType, FActorCo
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 	
 	//Polling the trigger volume to check if trigger is stepped on:
-	if (GetTotalMassOfActorsOnPlate() > 30.0f)
+	if (GetTotalMassOfActorsOnPlate() > TriggerMass)
 	{
 		OpenDoor();
 		LastDoorOpenTime = GetWorld()->GetTimeSeconds();

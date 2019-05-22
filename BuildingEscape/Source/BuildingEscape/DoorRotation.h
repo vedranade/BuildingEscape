@@ -7,6 +7,7 @@
 #include "Engine/TriggerVolume.h"
 #include "DoorRotation.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnOpenRequest);
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class BUILDINGESCAPE_API UDoorRotation : public UActorComponent
@@ -30,14 +31,21 @@ public:
 
 private:
 
+	UPROPERTY(BlueprintAssignable)
+		FOnOpenRequest OnOpenRequest;
+
+	UPROPERTY(BlueprintAssignable)
+		FOnOpenRequest OnCloseRequest;
+
 	FRotator CurrentRotation;
 
 	AActor *Owner = nullptr;
-	UPROPERTY(EditAnywhere)
-		float DoorAngle = 90.0f;
 
 	UPROPERTY(EditAnywhere)
 		ATriggerVolume* PressurePlate = nullptr;
+
+	UPROPERTY(EditAnywhere)
+		float TriggerMass = 30.0f;
 		
 	float LastDoorOpenTime;
 
