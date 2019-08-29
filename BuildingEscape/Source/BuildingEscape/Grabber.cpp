@@ -59,10 +59,12 @@ void UGrabber::SetupInputComponent()
 void UGrabber::FindPhysicsHandleComponent()
 {
 	PhysicsHandle = GetOwner()->FindComponentByClass<UPhysicsHandleComponent>();
+	FVector RightVector = GetOwner()->GetActorRightVector();
 
 	if (PhysicsHandle == nullptr)
 		UE_LOG(LogTemp, Error, TEXT("Physics handle not found"));
 }
+
 ///Ray-cast and grab what is in reach:
 void UGrabber::Grab()
 {

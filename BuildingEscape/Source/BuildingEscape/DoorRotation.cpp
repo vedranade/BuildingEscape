@@ -49,8 +49,6 @@ void UDoorRotation::TickComponent(float DeltaTime, ELevelTick TickType, FActorCo
 	{
 		OnClose.Broadcast();
 	}
-	
-	// ...
 }
 
 float UDoorRotation::GetTotalMassOfActorsOnPlate()
